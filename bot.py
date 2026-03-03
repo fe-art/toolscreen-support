@@ -1,12 +1,10 @@
 import logging
 import asyncio
 import sqlite3
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import discord
 from discord import app_commands
-from discord.ext import tasks
 import yaml
 
 import troubleshoot
@@ -18,15 +16,11 @@ ROOT = Path(__file__).resolve().parent
 config = yaml.safe_load(open(ROOT / "config.yaml", encoding="utf-8"))
 
 BOT_TOKEN: str = config["bot_token"]
-GUILD_ID: int = config["guild_id"]
 WATCHED: set[int] = set(config.get("watched_channel_ids", []))
 TRIAGE_DELAY: int = config.get("triage_delay_seconds", 2)
 TAG_BUG: str = config.get("bug_tag_name", "Bug").lower()
 TAG_ONGOING: str = config.get("ongoing_tag_name", "Ongoing").lower()
-TAG_DONE: str = config.get("done_tag_name", "Done").lower()
 DEV_ROLE_ID: int = config.get("dev_role_id", 0)
-INACTIVITY_H: int = config.get("inactivity_hours", 24)
-INACTIVITY_CHECK_MIN: int = config.get("inactivity_check_interval_minutes", 30)
 
 DEFAULT_TRIAGE = """\
 Hey @MENTION, before filling this out, check <#1475303077342085121> — your issue might already be covered there!
@@ -46,8 +40,6 @@ Full launcher log: (Edit Instance > Minecraft Log, not `latest.log`)
 Optional: other mods installed, injector.log, screenshot/video, your config (`!config`)
 
 Toolscreen requires fullscreen to work. If nothing shows up after install, try F11 first."""
-
-CLOSE_MSG = "\u23f3 No replies in {days}d - marking as done. Post again to reopen."
 
 DB = ROOT / "bot.db"
 _conn = sqlite3.connect(DB)
@@ -83,18 +75,6 @@ async def set_tag(thread: discord.Thread, tag: discord.ForumTag) -> bool:
         return True
     except discord.HTTPException as e:
         log.error("Tag add failed on %s: %s", thread.id, e)
-        return False
-
-
-async def unset_tag(thread: discord.Thread, tag: discord.ForumTag) -> bool:
-    tags = [t for t in thread.applied_tags if t.id != tag.id]
-    if len(tags) == len(thread.applied_tags):
-        return False
-    try:
-        await thread.edit(applied_tags=tags)
-        return True
-    except discord.HTTPException as e:
-        log.error("Tag remove failed on %s: %s", thread.id, e)
         return False
 
 
@@ -141,8 +121,6 @@ async def on_ready():
     log.info("Online as %s", client.user)
     cmds = await tree.sync()
     log.info("Synced %d global commands", len(cmds))
-    if not check_inactive.is_running():
-        check_inactive.start()
 
 
 @client.event
@@ -168,57 +146,6 @@ async def on_thread_create(thread: discord.Thread):
     except discord.HTTPException as e:
         log.error("Triage send failed on %s: %s", thread.id, e)
 
-
-@tasks.loop(minutes=INACTIVITY_CHECK_MIN)
-async def check_inactive():
-    cutoff = datetime.now(timezone.utc) - timedelta(hours=INACTIVITY_H)
-    guild = client.get_guild(GUILD_ID)
-    if not guild:
-        return
-
-    for cid in WATCHED:
-        ch = guild.get_channel(cid)
-        if not isinstance(ch, discord.ForumChannel):
-            continue
-
-        done = find_tag(ch, TAG_DONE)
-        ongoing = find_tag(ch, TAG_ONGOING)
-        if not done:
-            continue
-
-        for thread in ch.threads:
-            if has_tag(thread, TAG_DONE) or thread.archived:
-                continue
-
-            last = thread.archive_timestamp or thread.created_at
-            if thread.last_message_id:
-                last = datetime.fromtimestamp(
-                    ((thread.last_message_id >> 22) + 1420070400000) / 1000, tz=timezone.utc
-                )
-            if last > cutoff:
-                continue
-
-            try:
-                msgs = [m async for m in thread.history(limit=5)]
-            except discord.HTTPException:
-                continue
-            if sum(1 for m in msgs if not m.author.bot) > 1:
-                continue
-
-            log.info("Closing inactive thread '%s' (%s)", thread.name, thread.id)
-            try:
-                await thread.send(CLOSE_MSG.format(days=INACTIVITY_H // 24 or 1))
-                await set_tag(thread, done)
-                if ongoing:
-                    await unset_tag(thread, ongoing)
-                await thread.edit(archived=True)
-            except discord.HTTPException:
-                pass
-
-
-@check_inactive.before_loop
-async def _wait():
-    await client.wait_until_ready()
 
 
 if __name__ == "__main__":
