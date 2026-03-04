@@ -13,7 +13,7 @@
 
 meta:
   version: 2
-  updated: "2026-02-23"
+  updated: "2026-03-03"
   source: "Analysis of 67 #more-help + 4849+2256+1985 #help + 224 #more-help messages"
 
 nodes:
@@ -219,7 +219,7 @@ nodes:
   sol_unicode_username:
     type: solution
     text: |
-      This was a known bug in older versions. **Update to the latest version** of Toolscreen, which includes Unicode path support.
+      This was a bug fixed in **v1.0.6**. **Update Toolscreen** to the latest version.
     did_not_help: nsu_launcher
 
   nsu_gpu_overlay:
@@ -356,18 +356,34 @@ nodes:
     did_not_help: escalate_freeze
 
   sol_ff_dedicated_gpu:
+    type: question
+    text: "Is your dedicated GPU **AMD** or **NVIDIA**?"
+    options:
+      - label: "AMD"
+        next: sol_ff_dedicated_amd
+      - label: "NVIDIA"
+        next: sol_ff_dedicated_nvidia
+
+  sol_ff_dedicated_amd:
     type: solution
     text: |
-      Less common on dedicated GPUs, but still possible. Try these steps:
+      AMD GPU drivers (especially recent ones) can cause freezes when toggling macros.
+      1. **Roll back your AMD drivers** to an older version (e.g., 25.9.1 or earlier). This has fixed the issue for many users
+      2. **Update to Toolscreen v1.0.5+**
+      3. Add `C:\Users\<username>\.config\toolscreen\` to **Windows Defender exclusions**
+      4. Enable **"Allow exit to fullscreen regardless of game state"**
+      5. Delete `config.toml` and reinstall
+    did_not_help: escalate_freeze
+
+  sol_ff_dedicated_nvidia:
+    type: solution
+    text: |
+      Less common on dedicated NVIDIA GPUs, but still possible. Try these steps:
       1. **Update to Toolscreen v1.0.5+**
       2. Add `C:\Users\<username>\.config\toolscreen\` to **Windows Defender exclusions**
       3. Enable **"Allow exit to fullscreen regardless of game state"**
       4. Delete `config.toml` and reinstall
       5. **Update your GPU drivers**
-
-      **Note:** Very new GPU hardware (e.g., AMD RX 9070 XT) may have driver incompatibilities
-      with Toolscreen's graphics hooks that haven't been resolved yet. If you have a brand new GPU
-      and experience freezes, please file a bug report so the developer can investigate.
     did_not_help: escalate_freeze
 
   escalate_freeze:
@@ -405,7 +421,7 @@ nodes:
     type: solution
     text: |
       Try **removing the mapless mirror** from your current mode's configuration.
-      This is a confirmed bug where mirrors cause flickering. If removing it fixes the issue, it's a known bug awaiting a developer fix.
+      This is a confirmed bug where mirrors cause flickering. This was potentially fixed in **v1.0.9** — **update Toolscreen** to the latest version.
     did_not_help: ff_random_version
 
   ff_random_version:
@@ -717,7 +733,7 @@ nodes:
   sol_perf_font_reset:
     type: solution
     text: |
-      Invalid fonts cause severe lag (known bug — font fallback logic is broken).
+      Invalid fonts cause severe lag (fixed in **v1.0.9**). **Update Toolscreen** to the latest version.
       Delete the config file to reset the font:
       `C:\Users\<username>\.config\toolscreen\config.toml`
     did_not_help: perf_border
@@ -1028,8 +1044,8 @@ nodes:
   sol_sens_eyezoom_fps:
     type: solution
     text: |
-      The EyeZoom FPS setting may have defaulted to a very low value (a known bug in some versions).
-      Go to **Advanced -> Modes -> EyeZoom -> ZoomFPS** and set it to a higher value (e.g., 30 or 60).
+      The EyeZoom FPS setting may have defaulted to a very low value (a bug fixed in **v1.0.6**). **Update Toolscreen** to the latest version.
+      If you're on an older version, go to **Advanced -> Modes -> EyeZoom -> ZoomFPS** and set it to a higher value (e.g., 30 or 60).
     did_not_help: sens_raw_input
 
   sol_sens_eyezoom_twitch:
@@ -1338,7 +1354,8 @@ nodes:
     type: solution
     text: |
       After installing Toolscreen, your OBS capture source needs to be updated.
-      Change your Game Capture to target the window labeled **"Minecraft*"** (the window Toolscreen creates), not the old instance-specific capture.
+      1. Change your Game Capture to target the window labeled **"Minecraft*"** (the window Toolscreen creates), not the old instance-specific capture
+      2. If it's still a black screen, open your Game Capture source properties and enable **"SLI/Crossfire Capture Mode (Slow)"**
     did_not_help: escalate_generic
 
   obs_anim_borderless:
@@ -1424,15 +1441,14 @@ nodes:
   sol_save_resolution:
     type: solution
     text: |
-      This is a **known bug** in the **Basic tab**. Resolution settings don't save correctly from there.
-      **Workaround:** Use the **Advanced tab** instead to set your thin/wide resolution. This will be fixed in a future update.
+      This was a bug fixed in **v1.0.4**. **Update Toolscreen** to the latest version.
+      If you're already up to date and it still happens, use the **Advanced tab** instead of the Basic tab as a workaround.
     did_not_help: escalate_generic
 
   sol_save_themes:
     type: solution
     text: |
-      This is a **known bug**. Custom colors save correctly, but the **preset theme base** they're applied on top of does not persist.
-      No workaround is currently available — this is awaiting a developer fix.
+      This was a bug fixed in **v1.0.4**. **Update Toolscreen** to the latest version — custom theme colours now save correctly.
     did_not_help: escalate_generic
 
   save_all_reset:
@@ -1585,19 +1601,3 @@ nodes:
       If the issue persists, downgrade to a previous version until a fix is released.
     did_not_help: escalate_generic
 
-  # ============================================================
-  # SHARED: Common solution nodes referenced from multiple branches
-  # ============================================================
-  sol_delete_config:
-    type: solution
-    text: |
-      Delete the Toolscreen config file to reset all settings:
-      `C:\Users\<username>\.config\toolscreen\config.toml`
-      Then restart your game.
-    did_not_help: escalate_generic
-
-  sol_update_toolscreen:
-    type: solution
-    text: |
-      **Update Toolscreen** to the latest version. Many bugs from older versions have been fixed.
-    did_not_help: escalate_generic

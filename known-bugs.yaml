@@ -20,7 +20,7 @@ bugs:
     discord_thread: "1474141460424163348"
     github_issue: null
     status: investigating
-    affects: [escalate_freeze, sol_ff_dedicated_gpu]
+    affects: [escalate_freeze, sol_ff_dedicated_amd, sol_ff_dedicated_nvidia]
     summary: >
       Screen goes black or freezes when toggling display modes or macros.
       Correlated with integrated GPUs, but also affects very new dGPUs
@@ -108,7 +108,7 @@ bugs:
     discord_thread: "1472915912020594865"
     github_issue: null
     status: investigating
-    affects: [escalate_generic]
+    affects: [sol_disable_gpu_overlay]
     summary: >
       Toolscreen fails to hook OpenGL on certain system configurations.
       Related to AMD Adrenalin / hook chaining.
