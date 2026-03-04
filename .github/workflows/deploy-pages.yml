@@ -1,0 +1,38 @@
+name: Deploy troubleshooting site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'troubleshooting-tree.yaml'
+      - 'known-bugs.yaml'
+      - 'docs/**'
+
+permissions:
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy YAML data into docs/
+        run: |
+          cp troubleshooting-tree.yaml docs/
+          cp known-bugs.yaml docs/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

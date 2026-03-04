@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toolscreen Troubleshooting</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Toolscreen <span>Troubleshooting</span></h1>
+    <nav id="mode-tabs">
+      <button class="tab active" data-mode="wizard">Wizard</button>
+      <button class="tab" data-mode="treemap">Flowchart</button>
+    </nav>
+    <div id="meta-info"></div>
+  </header>
+
+  <main id="wizard-view">
+    <nav id="breadcrumbs"></nav>
+    <article id="node-card" class="node-card"></article>
+  </main>
+
+  <main id="treemap-view" hidden>
+    <div id="tree-controls">
+      <select id="branch-select"></select>
+      <span id="branch-info"></span>
+      <div id="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#6080c0"></span>Question</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#509060"></span>Fix</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#b08840"></span>Escalate</span>
+        <span class="legend-dashed">- - - didn't help</span>
+      </div>
+    </div>
+    <div id="tree-container">
+      <div id="mermaid-graph"></div>
+      <aside id="node-detail" hidden></aside>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script src="app.js"></script>
+  <script src="wizard.js"></script>
+  <script src="treemap.js"></script>
+</body>
+</html>
