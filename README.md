@@ -1,6 +1,6 @@
-# Toolscreen Discord Bot
+# Toolscreen Support
 
-Support bot for the [Toolscreen](https://github.com/jojoe77777/Toolscreen) project's Discord server. It deflects common support requests through a self-service `/troubleshoot` command so that **#more-help** stays focused on genuinely new or unresolved bugs. Users whose issue isn't covered are guided to open (or join) a bug report there.
+Support resources for the [Toolscreen](https://github.com/jojoe77777/Toolscreen) project: a troubleshooting knowledge base, a web flowchart, and a Discord bot. The knowledge base drives a self-service `/troubleshoot` command so that **#more-help** stays focused on genuinely new or unresolved bugs. Users whose issue isn't covered are guided to open (or join) a bug report there.
 
 ## Troubleshooting command
 
@@ -17,9 +17,13 @@ Every node visit and solve is counted in `bot.db` (`node_hits` table). A solve r
 
 The knowledge base is only as good as the data behind it. Contributions to `troubleshooting-tree.yaml` are welcome to keep it up to date.
 
+## Web troubleshooting map
+
+The `docs/` directory contains a small web app that loads `troubleshooting-tree.yaml` and `known-bugs.yaml` at runtime and renders an interactive Mermaid diagram for each branch. Nodes linked to known bugs are flagged with a warning marker. The site is deployed automatically via GitHub Actions whenever the YAML files change.
+
 ## Bug triage listener
 
-The bot watches forum channels listed in `watched_channel_ids`. When a new post is created with the **Bug** tag, it replies with a structured triage template asking for OS, Toolscreen version, Minecraft version, launcher, logs, etc. Threads with no activity after a configurable period are automatically tagged as done and archived.
+The bot watches forum channels listed in `watched_channel_ids`. When a new post is created with the **Bug** tag, it replies with a structured triage template asking for OS, Toolscreen version, Minecraft version, launcher, logs, etc.
 
 ## Setup
 

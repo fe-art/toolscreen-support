@@ -1,5 +1,5 @@
 [project]
-name = "toolscreen-discord-bot"
+name = "toolscreen-support"
 version = "0.1.0"
 description = "Discord bot for Toolscreen support triage"
 requires-python = ">=3.11"
