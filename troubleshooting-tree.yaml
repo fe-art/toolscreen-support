@@ -12,9 +12,8 @@
 # `escalate` is always a terminal node.
 
 meta:
-  version: 2
-  updated: "2026-03-03"
-  source: "Analysis of 67 #more-help + 4849+2256+1985 #help + 224 #more-help messages"
+  version: 3
+  updated: "2026-03-06"
 
 nodes:
 
@@ -53,6 +52,8 @@ nodes:
         next: sol_phantom_right_click
       - label: "Fullscreen resets on every new world"
         next: sol_ff_standardsettings
+      - label: "Pie chart looks doubled in thin mode"
+        next: sol_thin_pie_doubled
       - label: "Something else"
         next: escalate_generic
 
@@ -84,19 +85,31 @@ nodes:
 
   nsu_fullscreen:
     type: question
-    text: "Are you in **fullscreen** mode (not windowed)?"
+    text: "What Toolscreen version are you using?"
     options:
-      - label: "No / Not sure"
-        next: sol_use_fullscreen
-      - label: "Yes, I'm in fullscreen"
-        next: nsu_antivirus
+      - label: "1.1 or newer"
+        next: sol_use_fullscreen_v11
+      - label: "1.0.9 or older"
+        next: sol_use_fullscreen_legacy
+      - label: "Not sure"
+        next: sol_use_fullscreen_v11
 
-  sol_use_fullscreen:
+  sol_use_fullscreen_v11:
     type: solution
     text: |
-      Press **F11** to enter fullscreen. The config menu (Ctrl+I) **only works in fullscreen**.
-      Once configured, you can use **borderless mode** via a hotkey (set in Advanced -> Hotkeys -> Toggle Borderless).
-      Toolscreen does NOT work in **windowed** (non-borderless) mode.
+      Since **v1.1**, Toolscreen works in **fullscreen**, **borderless**, and **windowed** mode.
+      Press **F11** to enter fullscreen, or use one of these borderless options:
+      1. **Ctrl+I -> Basic -> Go Borderless** button
+      2. Enable **auto-borderless** in the Basic tab
+      3. Set a **borderless hotkey** in Advanced -> Hotkeys -> Toggle Borderless
+    did_not_help: nsu_mc_open
+
+  sol_use_fullscreen_legacy:
+    type: solution
+    text: |
+      On versions **before v1.1**, Toolscreen only works in **fullscreen** or **borderless** mode.
+      Press **F11** to enter fullscreen. The config menu (Ctrl+I) only works in fullscreen.
+      **Update Toolscreen** to v1.1+ for windowed mode support.
     did_not_help: nsu_mc_open
 
   nsu_mc_open:
@@ -143,6 +156,9 @@ nodes:
     type: solution
     text: |
       **Smart App Control** silently blocks Toolscreen even with Defender exclusions set.
+      **Toolscreen v1.1+** will attempt to detect SAC and guide you through disabling it.
+
+      To disable manually:
       1. Press **Windows + I** to open Settings
       2. Go to **Privacy & Security > Windows Security > App & Browser Control**
       3. Set **Smart App Control** to **Off**
@@ -204,7 +220,7 @@ nodes:
 
       If you need Afterburner, you can either:
       - Add Minecraft's `javaw.exe` to RivaTuner and set **Application Detection Level** to **None**
-      - Or set `disableHookChaining = false` in `config.toml`
+      - Hook chaining is **enabled by default** since v1.1 and should handle most overlay conflicts automatically
     did_not_help: nsu_gpu_overlay
 
   nsu_unicode:
@@ -234,11 +250,12 @@ nodes:
   sol_disable_gpu_overlay:
     type: solution
     text: |
-      GPU overlay software can conflict with Toolscreen's graphics hooks, just like RivaTuner.
+      Overlay software can conflict with Toolscreen's graphics hooks, just like RivaTuner.
       **Disable overlays** in:
       - **GeForce Experience** -> Settings -> In-Game Overlay -> OFF
       - **AMD Adrenalin** -> Settings -> Preferences -> In-Game Overlay -> OFF
       - **Discord** -> Settings -> Game Overlay -> OFF
+      - **Medal** -> Close entirely (known conflicts with Toolscreen)
     did_not_help: nsu_java_path
 
   nsu_java_path:
@@ -253,12 +270,16 @@ nodes:
   sol_fix_java_path:
     type: solution
     text: |
-      The **"javaw" shortcut** prevents Toolscreen from injecting properly.
+      This was fixed in **v1.0.9+**. **Update Toolscreen** to the latest version.
+
+      If you can't update, fix the Java path manually:
       1. Go to **Edit Instance > Settings > Java > Auto-detect** (or Browse)
       2. Select a path that starts with `C:/...` such as:
          `C:/Program Files/Java/jdk-21/bin/javaw.exe`
       3. If no full path appears, install Java from: https://aka.ms/download-jdk/microsoft-jdk-21-windows-x64.msi
       4. After installing, click **Refresh** in the Auto-detect menu
+
+      Note: If using **GraalVM**, make sure your instance uses `javaw.exe`, not `java.exe`.
     did_not_help: nsu_unicode
 
   nsu_launcher:
@@ -368,11 +389,14 @@ nodes:
     type: solution
     text: |
       AMD GPU drivers (especially recent ones) can cause freezes when toggling macros.
-      1. **Roll back your AMD drivers** to an older version (e.g., 25.9.1 or earlier). This has fixed the issue for many users
-      2. **Update to Toolscreen v1.0.5+**
-      3. Add `C:\Users\<username>\.config\toolscreen\` to **Windows Defender exclusions**
-      4. Enable **"Allow exit to fullscreen regardless of game state"**
-      5. Delete `config.toml` and reinstall
+      Try these fixes in order:
+      1. **Roll back your AMD drivers** to an older version (e.g., 25.9.1 or earlier) — this has fixed it for many users
+      2. **Close Medal** if running (known to conflict with Toolscreen)
+      3. If using OBS, check that **Window Capture** sources use **BitBlt** capture method, not "Windows 10" — the Windows 10 mode can cause freezes
+      4. **Update Toolscreen** to the latest version
+      5. Add `C:\Users\<username>\.config\toolscreen\` to **Windows Defender exclusions**
+      6. Enable **"Allow exit to fullscreen regardless of game state"**
+      7. Delete `config.toml` and reinstall
     did_not_help: escalate_freeze
 
   sol_ff_dedicated_nvidia:
@@ -822,14 +846,32 @@ nodes:
     did_not_help: escalate_generic
 
   sol_kb_modifier_keys:
+    type: question
+    text: "What Toolscreen version are you using?"
+    options:
+      - label: "1.1 or newer"
+        next: sol_kb_modifier_keys_v11
+      - label: "1.0.9 or older"
+        next: sol_kb_modifier_keys_legacy
+      - label: "Not sure"
+        next: sol_kb_modifier_keys_v11
+
+  sol_kb_modifier_keys_v11:
     type: solution
     text: |
-      Some modifier keys are still **broken** in current Toolscreen versions:
-      - **RSHIFT**, **CAPSLOCK**, **RALT**, and **LALT** cannot be rebound reliably
-      - Some can be selected in the UI but do nothing in-game
+      Modifier key rebinding was **fixed in v1.1**. Left Alt vs Right Alt was fixed in **v1.1.2**.
 
-      **Workaround:** Use **AutoHotKey (AHK)** to remap these keys externally.
-      This is a known bug awaiting a developer fix.
+      If rebinding still doesn't work:
+      1. Use the **keyboard layout editor** in Advanced -> Inputs for advanced rebinding
+      2. If a specific modifier still won't bind, use **AutoHotKey (AHK)** as a workaround
+    did_not_help: escalate_generic
+
+  sol_kb_modifier_keys_legacy:
+    type: solution
+    text: |
+      On versions **before v1.1**, modifier keys (RSHIFT, CAPSLOCK, RALT, LALT) cannot be rebound reliably.
+      **Update Toolscreen** to v1.1+ to fix this.
+      If you can't update, use **AutoHotKey (AHK)** to remap these keys externally.
     did_not_help: escalate_generic
 
   sol_kb_exclusion_keys:
@@ -839,7 +881,10 @@ nodes:
       Go to **Advanced -> Hotkeys -> [Your Hotkey] -> Exclusion Keys** and check if any of the keys you're trying to use simultaneously are listed there.
       Remove the conflicting key from the exclusion list.
 
-      Example: If F3 is an exclusion key for your Thin hotkey, pressing Shift+F3 will block the Thin hotkey from activating.
+      **F3 is added as a default exclusion key** since v1.0.3. This means pressing F3 + your hotkey
+      won't trigger the hotkey. If you need F3 combos (e.g., for eye measuring), remove F3 from the exclusion list.
+
+      Example: If F3 is an exclusion key for your EyeZoom hotkey, pressing Shift+F3 will block the hotkey from activating.
     did_not_help: kb_other
 
   sol_kb_game_states:
@@ -851,6 +896,10 @@ nodes:
       **Common mistake:** "Cursor Free" is the opposite of what you want. "Cursor Free" means
       the cursor is visible (inventory/menu). "Cursor Grabbed" means normal gameplay where the
       cursor controls the camera.
+
+      **Important:** Game States require the **state-output mod** to be installed.
+      Check that `wpstateout.txt` exists in your `.minecraft` folder. If you previously had state-output
+      installed but removed it, delete the leftover `wpstateout.txt` file.
     did_not_help: kb_other
 
   sol_kb_number_keys:
@@ -895,8 +944,8 @@ nodes:
   sol_kb_font_crash:
     type: solution
     text: |
-      This is likely caused by a **corrupted font path** in your config. This happens after changing
-      fonts in Toolscreen settings (fonts are known to be broken in current versions).
+      This is likely caused by a **corrupted font path** in your config.
+      v1.0.9 partially fixed this (invalid fonts now fall back to Arial), but issues can still occur.
 
       **Fix:**
       1. Open `C:\Users\<username>\.config\toolscreen\config.toml`
@@ -904,7 +953,7 @@ nodes:
       3. Save and restart Minecraft
 
       Alternatively, delete the entire `config.toml` to reset all settings.
-      **Do NOT change fonts** in Toolscreen settings until this bug is officially fixed.
+      **Update Toolscreen** to the latest version for the best font handling.
     did_not_help: sol_kb_config_reset
 
   sol_kb_ctrli_obs:
@@ -917,12 +966,11 @@ nodes:
 
       **Cause 2 (Any GPU, hook chaining):** Toolscreen needs a secondary render path.
       Fixes (try in order):
-      1. **Update to Toolscreen 1.0.9+**
-      2. Open `C:\Users\<username>\.config\toolscreen\config.toml`
-      3. Find `disableHookChaining` and set it to `false`
-         (Note: The `disableHookChaining` setting was added in Toolscreen v1.0.9+.
-         If you don't see it in your config.toml, **update Toolscreen first**.)
-      4. If that doesn't help, enable **Virtual Camera** in Toolscreen Advanced settings
+      1. **Update to Toolscreen v1.1+** (hook chaining is now enabled by default)
+      2. If still broken, try changing the hook chaining target in `config.toml`:
+         - Find `hookChainingTarget` and try switching between `Original` and `Latest`
+      3. If hook chaining causes crashes, set `disableHookChaining` to `true`
+      4. If nothing works, enable **Virtual Camera** in Toolscreen Advanced settings
 
       **Workaround:** Keep OBS open with a Game Capture source for Minecraft (does not need to record).
     did_not_help: escalate_generic
@@ -1044,8 +1092,8 @@ nodes:
   sol_sens_eyezoom_fps:
     type: solution
     text: |
-      The EyeZoom FPS setting may have defaulted to a very low value (a bug fixed in **v1.0.6**). **Update Toolscreen** to the latest version.
-      If you're on an older version, go to **Advanced -> Modes -> EyeZoom -> ZoomFPS** and set it to a higher value (e.g., 30 or 60).
+      The EyeZoom FPS setting defaulted to a very low value. This was fixed in **v1.0.6**
+      (the ZoomFPS option was removed entirely). **Update Toolscreen** to the latest version.
     did_not_help: sens_raw_input
 
   sol_sens_eyezoom_twitch:
@@ -1325,6 +1373,16 @@ nodes:
       and change the **output position** there.
     did_not_help: escalate_generic
 
+  sol_thin_pie_doubled:
+    type: solution
+    text: |
+      If you see what looks like a **second pie chart** below the real one in thin mode,
+      your thin width is **too narrow**.
+
+      **Fix:** Increase your thin mode width. For example, change it from 295 to **320 or higher**.
+      Go to **Advanced -> Modes -> Thin -> Width** and increase the value.
+    did_not_help: escalate_generic
+
   sol_ov_color_code:
     type: solution
     text: |
@@ -1340,15 +1398,60 @@ nodes:
     text: "What is the issue?"
     options:
       - label: "Black screen in OBS"
-        next: sol_obs_black_screen
+        next: obs_capture_type
       - label: "Animations / transitions not showing in OBS"
         next: obs_anim_borderless
       - label: "Game appears upside down in OBS"
         next: sol_obs_upside_down
       - label: "Discord screen share / Medal / non-OBS recording broken"
         next: sol_obs_discord_screenshare
+      - label: "How to set up Virtual Camera for Discord"
+        next: sol_obs_virtual_camera_setup
       - label: "Toolscreen features only work when OBS is open"
         next: sol_obs_dependency
+
+  # --- OBS: Game Capture vs Window Capture confusion ---
+  obs_capture_type:
+    type: question
+    text: "Are you using a **Game Capture** source or a **Window Capture** source in OBS?"
+    options:
+      - label: "Game Capture"
+        next: sol_obs_black_screen
+      - label: "Window Capture"
+        next: sol_obs_use_game_capture
+      - label: "Not sure"
+        next: sol_obs_use_game_capture
+
+  sol_obs_use_game_capture:
+    type: solution
+    text: |
+      You need to use a **Game Capture** source, not a Window Capture.
+      Some users create a Window Capture and name it "Game Capture" — this is not the same thing.
+
+      1. In OBS, **remove** your current capture source
+      2. Click **+** to add a new source, select **Game Capture**
+      3. Set it to capture the window labeled **"Minecraft*"**
+
+      Note: OOMS (On-screen Mode Switching) only works with **Game Capture** or **Virtual Camera**, not Window Capture.
+    did_not_help: sol_obs_black_screen
+
+  # --- OBS: Virtual Camera setup ---
+  sol_obs_virtual_camera_setup:
+    type: solution
+    text: |
+      To set up **Virtual Camera** for Discord screen sharing:
+      1. **Install OBS** (you need the OBS Virtual Camera driver, even if you won't use OBS itself)
+      2. Install Toolscreen
+      3. Launch Minecraft with Toolscreen
+      4. In Toolscreen: **Advanced -> Settings -> Virtual Camera** -> Enable
+      5. In Discord: use the **camera button** (not screen share) and select **OBS Virtual Camera**
+
+      **Important:**
+      - Do NOT enable Virtual Camera inside OBS — Toolscreen takes over the driver directly
+      - OBS just needs to be **installed** for the driver. OBS can be closed
+      - Don't use Virtual Camera unless you need it (for Discord screenshare or if Game Capture fails)
+      - The preview may appear upside-down on your end — this is a Discord bug, viewers see it correctly
+    did_not_help: escalate_generic
 
   sol_obs_black_screen:
     type: solution
@@ -1499,7 +1602,7 @@ nodes:
   sol_howto_update:
     type: solution
     text: |
-      **Since v1.0.8**, Toolscreen has an **auto-updater** that prompts on launch.
+      **Since v1.0.6**, Toolscreen has an **auto-updater** that prompts on launch.
 
       To update manually:
       1. Download the **new .jar file** from Toolscreen releases

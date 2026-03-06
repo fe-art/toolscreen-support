@@ -40,11 +40,11 @@ bugs:
     name: RSHIFT / CAPSLOCK / RALT / LALT rebinding broken
     discord_thread: "1473758138107953265"
     github_issue: null
-    status: open
-    affects: [sol_kb_modifier_keys]
+    status: fixed
+    affects: [sol_kb_modifier_keys_legacy]
     summary: >
-      These modifier keys can be selected in the UI but do nothing in-game.
-      No fix, AHK workaround only.
+      Fixed in v1.1 (modifier keys) and v1.1.2 (left alt vs right alt).
+      Keyboard layout editor in Advanced -> Inputs for advanced rebinding.
 
   first_boot_fail:
     name: Toolscreen fails on first launch after PC restart
@@ -60,11 +60,12 @@ bugs:
     name: Selecting a font crashes GUI / Ctrl+I shows cursor but no menu
     discord_thread: "1473697798821253150"
     github_issue: null
-    status: open
+    status: investigating
     affects: [sol_kb_font_crash, sol_perf_font_reset]
     summary: >
       Changing fonts in settings corrupts textFontPath in config.toml.
-      Workaround is to delete the font line from config. Fonts are "broken rn".
+      v1.0.9 added Arial fallback for invalid fonts but edge cases remain.
+      Workaround: delete the textFontPath line from config.toml.
 
   global_frame_limit:
     name: Global frame limit is half of configured value (1.0.7+)
@@ -121,7 +122,8 @@ bugs:
     affects: [sol_kb_ctrli_obs]
     summary: >
       Two causes: AMD Adrenalin DLL injection, or hook chaining issue.
-      disableHookChaining=false or Virtual Camera workaround.
+      v1.1 enabled hook chaining by default. Try changing hookChainingTarget
+      between Original and Latest in config.toml. Virtual Camera as last resort.
 
   phantom_right_click:
     name: Random phantom right-clicks in v1.0.9.1
@@ -137,11 +139,12 @@ bugs:
     name: Eye zoom overlay goes transparent when pausing with Esc
     discord_thread: null
     github_issue: null
-    status: open
+    status: investigating
     affects: [sol_sens_eyezoom_esc_opacity]
     summary: >
       v1.0.9+ bug. Pressing Esc during eye zoom makes overlay transparent.
-      Workaround: use F3+Esc instead. 5+ users confirmed.
+      v1.1 fixed "EyeZoom rendering issues with fog (pause menu)" which may cover this.
+      Workaround: use F3+Esc instead.
 
 
   ninb_overlay_mouse_capture:
