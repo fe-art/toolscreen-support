@@ -1,5 +1,6 @@
 import logging
 import asyncio
+import re
 import sqlite3
 from pathlib import Path
 
@@ -81,6 +82,12 @@ async def set_tag(thread: discord.Thread, tag: discord.ForumTag) -> bool:
 intents = discord.Intents.default()
 intents.guilds = True
 intents.guild_messages = True
+intents.message_content = True
+
+_REACTIONS = [
+    (re.compile(r"(?i)this is tool(\s|$)"), discord.PartialEmoji(name="tool", id=1474158956606652708)),
+    (re.compile(r"(?i)this is screen(\s|$)"), discord.PartialEmoji(name="screen", id=1474159046645780737)),
+]
 
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
@@ -121,6 +128,18 @@ async def on_ready():
     log.info("Online as %s", client.user)
     cmds = await tree.sync()
     log.info("Synced %d global commands", len(cmds))
+
+
+@client.event
+async def on_message(message: discord.Message):
+    if message.author == client.user:
+        return
+    for pattern, emoji in _REACTIONS:
+        if pattern.search(message.content):
+            try:
+                await message.add_reaction(emoji)
+            except discord.HTTPException:
+                pass
 
 
 @client.event
