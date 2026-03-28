@@ -24,23 +24,12 @@ TAG_ONGOING: str = config.get("ongoing_tag_name", "Ongoing").lower()
 DEV_ROLE_ID: int = config.get("dev_role_id", 0)
 
 DEFAULT_TRIAGE = """\
-Hey @MENTION, before filling this out, check <#1475303077342085121> — your issue might already be covered there!
+Hey @MENTION, check <#1475303077342085121> first, your issue might already be solved!
 
-If it's not, please fill in what you can:
-
-OS: (e.g. Windows 10, Windows 11)
-Toolscreen version:
-Minecraft version:
-Launcher + version: (e.g. MultiMC 0.7.0, Prism 8.0)
-Java version: (run `java -version`)
-GPU: (e.g. NVIDIA RTX 3060, AMD RX 6700 XT)
-Display mode: Fullscreen / Windowed / Borderless
-What happened: (steps to reproduce + what you expected vs what you got)
-Full launcher log: (Edit Instance > Minecraft Log, not `latest.log`)
-
-Optional: other mods installed, injector.log, screenshot/video, your config (`!config`)
-
-Toolscreen requires fullscreen to work. If nothing shows up after install, try F11 first."""
+If not, please tell us:
+• your Toolscreen version
+• what happened (what you did, what you expected, what you got instead)
+• your Toolscreen log file, found at `C:\\Users\\<your username>\\.config\\toolscreen\\logs\\latest.log`"""
 
 DB = ROOT / "bot.db"
 _conn = sqlite3.connect(DB)
