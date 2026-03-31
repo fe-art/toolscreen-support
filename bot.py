@@ -9,6 +9,7 @@ from discord import app_commands
 import yaml
 
 import troubleshoot
+import doc_command
 
 log = logging.getLogger("toolscreen-bot")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -78,10 +79,17 @@ _REACTIONS = [
     (re.compile(r"(?i)this is screen(\s|$)"), discord.PartialEmoji(name="screen", id=1474159046645780737)),
 ]
 
+SUGGESTIONS_CH = 1479222344370360320
+_VOTE_EMOJIS = [
+    discord.PartialEmoji(name="upvote", id=1484192539090358383),
+    discord.PartialEmoji(name="downvote", id=1484192538125402233),
+]
+
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 troubleshoot.load_tree()
 troubleshoot.setup(client, tree)
+doc_command.setup(client, tree)
 
 
 def _has_dev_role(interaction: discord.Interaction) -> bool:
@@ -123,6 +131,12 @@ async def on_ready():
 async def on_message(message: discord.Message):
     if message.author == client.user:
         return
+    if message.channel.id == SUGGESTIONS_CH:
+        for emoji in _VOTE_EMOJIS:
+            try:
+                await message.add_reaction(emoji)
+            except discord.HTTPException:
+                pass
     for pattern, emoji in _REACTIONS:
         if pattern.search(message.content):
             try:
