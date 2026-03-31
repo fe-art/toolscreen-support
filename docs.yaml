@@ -1,0 +1,71 @@
+prelaunch:
+  title: Pre-Launch Commands
+  summary: |
+    Toolscreen creates a `pre-launch.txt` file in every instance folder. Any line in this file runs as a command on game launch.
+
+    To auto-start Ninjabrain Bot, add:
+    ```
+    "C:\path\to\javaw.exe" -jar "C:\path\to\ninjabrain-bot.jar"
+    ```
+    Replace paths with your actual file paths. Add more lines to launch multiple programs (Jingle, etc).
+  wiki_url: https://github.com/jojoe77777/Toolscreen/wiki/Settings-and-Configuration#pre-launch-commands
+  video_url: https://youtu.be/LG13ljK9RPs?t=1200
+
+exclusion_keys:
+  title: Exclusion Keys
+  summary: |
+    If your resize hotkey conflicts with an F3 combo (like `G` for chunk borders):
+
+    1. Go to **Advanced > Hotkeys** and select the hotkey
+    2. Under **Exclusion Keys**, `F3` is added by default
+
+    This way `F3+G` does chunk borders, while just `G` toggles the mode. You can add or remove exclusion keys there.
+  wiki_url: https://github.com/jojoe77777/Toolscreen/wiki/Hotkeys#exclusion-keys
+  video_url: https://youtu.be/LG13ljK9RPs?t=769
+
+key_repeat:
+  title: Key Repeat Rate
+  summary: |
+    To change how fast keys repeat when held (useful for `F3+F` render distance):
+
+    1. Go to **Advanced > Inputs > Keyboard**
+    2. **Start Delay** -- how long before repeating starts. Keep at least **100ms** or keys will double-tap on single presses
+    3. **Repeat Delay** -- interval between repeats. Lower = faster, but very low values may lag
+
+    If you get stuck on the pause menu from keys repeating, click **Unpause**, then fix the start delay.
+  wiki_url: https://github.com/jojoe77777/Toolscreen/wiki/Settings-and-Configuration#key-repeat-rate
+  video_url: https://youtu.be/LG13ljK9RPs?t=1098
+
+ninjabrain_overlay:
+  title: Ninjabrain Bot Overlay
+  summary: |
+    1. In Ninjabrain Bot: **Settings > OBS Overlay > Enable Overlay**
+    2. In Toolscreen: `Ctrl+I` > **Basic** > enable **Ninjabrain Bot Overlay**
+    3. Do `F3+C` in a world to see it
+    4. To configure: **Advanced > Images > Ninjabrain Bot** (crop, color key, scale, position)
+
+    For the color key, Ninjabrain Bot's default background RGB is `55, 60, 66`.
+  wiki_url: https://github.com/jojoe77777/Toolscreen/wiki/Overlays#setting-up-the-ninjabrain-bot-overlay
+  video_url: https://youtu.be/LG13ljK9RPs?t=60
+
+disable_hotkeys_menu:
+  title: Disable Hotkeys in Chat/Inventory
+  summary: |
+    To stop resize hotkeys from triggering while the inventory or pause screen is open:
+
+    Go to **Advanced > Hotkeys** > select the hotkey > **Required Game States**, untick `Any`, tick `In World (Cursor Grabbed)` and untick `In World (Cursor Free)`.
+  wiki_url: https://github.com/jojoe77777/Toolscreen/wiki/Hotkeys#preventing-hotkeys-from-triggering-in-menus
+
+logs:
+  title: Toolscreen Logs
+  summary: |
+    Send the log file from `C:/Users/<username>/.config/toolscreen/logs/latest.log`
+  wiki_url: https://github.com/jojoe77777/Toolscreen/wiki/Settings-and-Configuration#config-folder-locations
+
+config:
+  title: Toolscreen Config
+  summary: |
+    The config file is located at `C:/Users/<your username>/.config/toolscreen/config.toml`.
+
+    -# This global config file is shared between all Minecraft instances, but you can override it for a specific instance by creating a `toolscreen` folder in your instance's `.minecraft` folder.
+  wiki_url: https://github.com/jojoe77777/Toolscreen/wiki/Settings-and-Configuration#config-folder-locations

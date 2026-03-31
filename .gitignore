@@ -1,6 +1,8 @@
 *
 !.gitignore
 !bot.py
+!doc_command.py
+!docs.yaml
 !troubleshoot.py
 !troubleshooting-tree.yaml
 !known-bugs.yaml
