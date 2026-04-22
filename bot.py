@@ -1,3 +1,4 @@
+import datetime
 import logging
 import asyncio
 import re
@@ -10,6 +11,7 @@ import yaml
 
 import troubleshoot
 import doc_command
+import quick_reply
 
 log = logging.getLogger("toolscreen-bot")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -35,7 +37,10 @@ If not, please tell us:
 DB = ROOT / "bot.db"
 _conn = sqlite3.connect(DB)
 _conn.execute("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
+_conn.execute("CREATE TABLE IF NOT EXISTS quick_reply_hits (rule_id TEXT PRIMARY KEY, hits INTEGER NOT NULL DEFAULT 0)")
+_conn.execute("CREATE TABLE IF NOT EXISTS daily_snapshot (date TEXT NOT NULL, source TEXT NOT NULL, key TEXT NOT NULL, hits INTEGER NOT NULL, PRIMARY KEY (date, source, key))")
 _conn.commit()
+_last_snapshot_date: str = ""
 
 
 def db_get(key: str, default: str | None = None) -> str | None:
@@ -46,6 +51,34 @@ def db_get(key: str, default: str | None = None) -> str | None:
 def db_set(key: str, value: str):
     _conn.execute("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)", (key, value))
     _conn.commit()
+
+
+def record_quick_reply(rule_id: str):
+    _conn.execute(
+        "INSERT INTO quick_reply_hits (rule_id, hits) VALUES (?, 1) ON CONFLICT(rule_id) DO UPDATE SET hits = hits + 1",
+        (rule_id,),
+    )
+    _conn.commit()
+
+
+def _take_daily_snapshot():
+    global _last_snapshot_date
+    today = datetime.date.today().isoformat()
+    if today == _last_snapshot_date:
+        return
+    _last_snapshot_date = today
+    for row in _conn.execute("SELECT rule_id, hits FROM quick_reply_hits"):
+        _conn.execute(
+            "INSERT OR REPLACE INTO daily_snapshot (date, source, key, hits) VALUES (?, 'quick_reply', ?, ?)",
+            (today, row[0], row[1]),
+        )
+    for row in _conn.execute("SELECT node_id, hits FROM node_hits"):
+        _conn.execute(
+            "INSERT OR REPLACE INTO daily_snapshot (date, source, key, hits) VALUES (?, 'troubleshoot', ?, ?)",
+            (today, row[0], row[1]),
+        )
+    _conn.commit()
+    log.info("Daily snapshot saved for %s", today)
 
 
 
@@ -90,6 +123,7 @@ tree = app_commands.CommandTree(client)
 troubleshoot.load_tree()
 troubleshoot.setup(client, tree)
 doc_command.setup(client, tree)
+quick_reply.setup(config)
 
 
 def _has_dev_role(interaction: discord.Interaction) -> bool:
@@ -131,6 +165,14 @@ async def on_ready():
 async def on_message(message: discord.Message):
     if message.author == client.user:
         return
+    _take_daily_snapshot()
+    rule = await quick_reply.match(message)
+    if rule:
+        record_quick_reply(rule.id)
+        try:
+            await message.reply(rule.reply, mention_author=False)
+        except discord.HTTPException as e:
+            log.error("Quick reply failed: %s", e)
     if message.channel.id == SUGGESTIONS_CH:
         for emoji in _VOTE_EMOJIS:
             try:

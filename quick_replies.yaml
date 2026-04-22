@@ -1,0 +1,159 @@
+# Quick auto-replies for #help channel.
+# Each rule: id, trigger phrases (case-insensitive substring), reply.
+# First matching rule wins. One reply per message.
+# Optional max_length: only trigger if message is shorter than N characters
+#   (useful for vague/generic patterns to avoid matching detailed messages).
+
+rules:
+  - id: tabs_out
+    patterns:
+      - "tabs me out"
+      - "tabs out"
+      - "tabbing out"
+      - "tabbed out"
+    reply: |
+      NinjaBrainBot's "Toggle Visibility" hotkey brings its window into focus, which tabs you out of Minecraft.
+
+      **Fix:** disable the "Toggle Visibility" hotkey in NinjaBrainBot settings, and use Toolscreen's instead: **Advanced > Hotkeys > Toggle Window Overlays**
+
+  - id: cant_find_jar
+    patterns:
+      - "can't find jar"
+      - "cannot find jar"
+      - "jar disappeared"
+      - "jar is missing"
+      - "jar missing"
+      - "jar is gone"
+      - "jar gone"
+      - "jar not there"
+      - "jar deleted"
+      - "jar got deleted"
+      - "access jarfile"
+    reply: |
+      Your .jar was likely **deleted by antivirus**. Toolscreen uses DLL injection, so antivirus software flags it as malicious (false positive).
+
+      **Fix:**
+      1. Check your antivirus **quarantine/history** and restore any Toolscreen files
+      2. Add an exclusion for the Toolscreen .jar and the `.config\toolscreen` folder
+      3. Re-download and install
+
+  - id: cant_download
+    patterns:
+      - "can't download"
+      - "cannot download"
+      - "cant download"
+      - "download blocked"
+      - "chrome blocked"
+      - "browser blocked"
+      - "not commonly downloaded"
+      - "could harm your"
+      - "dangerous file"
+    reply: |
+      Chrome (and some other browsers) flag the .jar as "not commonly downloaded". This is a false positive — click "Keep" on the download warning, or go to `chrome://downloads` and keep it from there.
+
+      If Windows SmartScreen blocks it too, click "More info" then "Run anyway".
+
+  - id: virus_detected
+    patterns:
+      - "virus detected"
+    reply: |
+      Toolscreen uses DLL injection, so antivirus flags it as malicious (false positive).
+
+      **Fix:** temporarily turn off **Real-time protection** in **Windows Security > Virus & threat protection settings**, install Toolscreen, then re-enable it. Add an exclusion for the .jar and `.config\toolscreen` folder so it doesn't get flagged too.
+
+  - id: not_a_mod
+    patterns:
+      - "mod crashed on startup"
+      - "mod crashed"
+      - "crash on startup"
+    reply: |
+      Toolscreen is **not a mod** — don't put it in your mods folder. Place the .jar in your instance folder and double-click it to run the installer.
+
+  - id: corrupt_file
+    patterns:
+      - "invalid or corrupt"
+      - "corrupt file"
+      - "corrupt jar"
+    reply: |
+      Re-run the Toolscreen installer — download the latest .jar and double-click it. Your config and settings are stored separately (`C:\Users\<username>\.config\toolscreen\`) and won't be affected.
+
+  - id: hotkey_in_inventory
+    patterns:
+      - "!inv"
+      - "hotkey in inventory"
+      - "hotkeys in inventory"
+      - "hotkey in menu"
+      - "hotkeys in menu"
+      - "hotkeys in chat"
+      - "hotkey in chat"
+      - "keybind in chat"
+      - "keybinds in chat"
+      - "keybind in inventory"
+      - "keybinds in inventory"
+      - "hotkeys in crafting"
+      - "hotkey in crafting"
+      - "hotkeys not work in chat"
+      - "hotkeys not work in crafting"
+      - "disable hotkeys when typing"
+      - "disable keybinds when typing"
+      - "disable hotkeys when in chat"
+      - "not work when typing"
+      - "not happen when chat"
+      - "activates in inventory"
+      - "activates in crafting"
+      - "activates in chat"
+      - "triggers in inventory"
+      - "triggers in chat"
+      - "triggers in crafting"
+      - "disable when typing in chat"
+      - "disable when in chat"
+      - "macros in menus"
+      - "resize in inventory"
+      - "resize in menu"
+      - "resizing not work when typing"
+    reply: |
+      Go to **Advanced > Hotkeys** > select the hotkey > **Required Game States**, untick **Any**, tick **In World (Cursor Grabbed)** and untick **In World (Cursor Free)**.
+
+      This way the hotkey only fires when you're actually playing, not in inventory or pause screens.
+
+  - id: change_background
+    patterns:
+      - "!bg"
+      - "change background"
+      - "change the background"
+      - "change bg"
+      - "change the bg"
+      - "add background"
+      - "add a background"
+      - "set background"
+      - "custom background"
+      - "background color"
+      - "background image"
+      - "background picture"
+      - "add image"
+      - "add picture"
+      - "add images"
+      - "add pictures"
+      - "put image"
+      - "put images"
+      - "image in the background"
+      - "images in the background"
+      - "purple gradient"
+      - "default purple"
+    reply: |
+      For small image overlays (PNGs on screen): **Advanced > Overlays > Images**
+
+      For mode backgrounds (behind thin/wide/eye zoom): **Advanced > Mode** > select the mode > **Background**, set it to Color, Image, or Gradient.
+
+  - id: failed_locale
+    patterns:
+      - "failed to find locale"
+      - "find locale"
+    reply: |
+      This usually happens when a pre-launch command to start OBS (or another program) doesn't set the working directory correctly.
+
+      **Fix:** use `start` with an explicit working directory:
+      ```
+      start "" /D "C:\Program Files\obs-studio\bin\64bit" obs64.exe
+      ```
+      Adjust the path to match your OBS install location.
