@@ -30,11 +30,11 @@ rules:
       - "jar got deleted"
       - "access jarfile"
     reply: |
-      Your .jar was likely **deleted by antivirus**. Toolscreen uses DLL injection, so antivirus software flags it as malicious (false positive).
+      Your .jar was likely **deleted by your antivirus**. Toolscreen uses DLL injection, so antivirus flags it as malicious (false positive).
 
       **Fix:**
       1. Check your antivirus **quarantine/history** and restore any Toolscreen files
-      2. Add an exclusion for the Toolscreen .jar and the `.config\toolscreen` folder
+      2. Add a **folder** exclusion for the Toolscreen .jar and the `.config\toolscreen\dlls` folder
       3. Re-download and install
 
   - id: cant_download
@@ -51,15 +51,40 @@ rules:
     reply: |
       Chrome (and some other browsers) flag the .jar as "not commonly downloaded". This is a false positive — click "Keep" on the download warning, or go to `chrome://downloads` and keep it from there.
 
-      If Windows SmartScreen blocks it too, click "More info" then "Run anyway".
+      If the download still fails, make sure you turn off **Smart App Control**: **Windows Settings > Privacy & security > Windows Security > App & browser control > Smart App Control > Off**
+
+      If it still won't work, try a different browser like Edge or Firefox.
 
   - id: virus_detected
     patterns:
       - "virus detected"
+      - "flagged as virus"
+      - "flagged as a virus"
+      - "detected as virus"
+      - "detected as a virus"
+      - "detected as trojan"
+      - "trojan detected"
+      - "flagged as malicious"
+      - "flagged as trojan"
+      - "found as a virus"
+      - "identified as a virus"
+      - "identified as trojan"
+      - "defender blocked"
+      - "defender removes"
+      - "defender flagged"
+      - "defender catches"
+      - "defender detected"
+      - "antivirus blocked"
+      - "antivirus removes"
+      - "antivirus flagged"
+      - "antivirus detected"
+      - "antivirus deleted"
+      - "suschill"
+      - "suschil"
     reply: |
       Toolscreen uses DLL injection, so antivirus flags it as malicious (false positive).
 
-      **Fix:** temporarily turn off **Real-time protection** in **Windows Security > Virus & threat protection settings**, install Toolscreen, then re-enable it. Add an exclusion for the .jar and `.config\toolscreen` folder so it doesn't get flagged too.
+      **Fix:** temporarily turn off **Real-time protection** in **Virus & threat protection settings** in your antivirus, install Toolscreen, then re-enable it. Add a **folder** exclusion for the .jar and the `.config\toolscreen\dlls` folder so it doesn't get flagged again.
 
   - id: not_a_mod
     patterns:
@@ -76,6 +101,27 @@ rules:
       - "corrupt jar"
     reply: |
       Re-run the Toolscreen installer — download the latest .jar and double-click it. Your config and settings are stored separately (`C:\Users\<username>\.config\toolscreen\`) and won't be affected.
+
+  - id: not_showing_up
+    patterns:
+      - "toolscreen not showing"
+      - "toolscreen doesn't show"
+      - "toolscreen doesnt show"
+      - "toolscreen won't show"
+      - "toolscreen wont show"
+      - "toolscreen not appearing"
+      - "toolscreen doesn't appear"
+      - "toolscreen doesnt appear"
+      - "overlay not showing"
+      - "overlay doesn't show"
+      - "overlay not appearing"
+      - "smart app control"
+    reply: |
+      Common causes:
+
+      1. **Smart App Control** is blocking it silently — turn it off: **Windows + I > Privacy & security > Windows Security > App & browser control > Smart App Control > Off**
+      2. **Antivirus** deleted the DLL — check if `toolscreen.dll` is still in `.config\toolscreen\dlls`. If not, add a folder exclusion and reinstall.
+      3. **Wrong capture method** — try toggling **Force Update** or switching capture method in Toolscreen settings.
 
   - id: hotkey_in_inventory
     patterns:

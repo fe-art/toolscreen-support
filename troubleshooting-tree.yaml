@@ -2302,7 +2302,7 @@ nodes:
     text: |
       You can auto-launch NinjaBrainBot when Minecraft starts via Toolscreen's **prelaunch.txt** file.
 
-      Add this line to `C:\Users\<username>\.config\toolscreen\prelaunch.txt` (create it if it doesn't exist):
+      Add this line to the `pre-launch.txt` file in your instance folder:
       ```
       start "" javaw -jar "C:\path\to\ninjabrain-bot.jar"
       ```

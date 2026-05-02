@@ -5,7 +5,7 @@ prelaunch:
 
     To auto-start Ninjabrain Bot, add:
     ```
-    "C:\path\to\javaw.exe" -jar "C:\path\to\ninjabrain-bot.jar"
+    start "" "C:\path\to\javaw.exe" -jar "C:\path\to\ninjabrain-bot.jar"
     ```
     Replace paths with your actual file paths. Add more lines to launch multiple programs (Jingle, etc).
   wiki_url: https://github.com/jojoe77777/Toolscreen/wiki/Settings-and-Configuration#pre-launch-commands
