@@ -6,6 +6,7 @@
 
 rules:
   - id: tabs_out
+    title: Tabbing out (NinjaBrain)
     patterns:
       - "tabs me out"
       - "tabs out"
@@ -17,6 +18,7 @@ rules:
       **Fix:** disable the "Toggle Visibility" hotkey in NinjaBrainBot settings, and use Toolscreen's instead: **Advanced > Hotkeys > Toggle Window Overlays**
 
   - id: cant_find_jar
+    title: Jar deleted by antivirus
     patterns:
       - "can't find jar"
       - "cannot find jar"
@@ -38,6 +40,7 @@ rules:
       3. Re-download and install
 
   - id: cant_download
+    title: Download blocked by browser
     patterns:
       - "can't download"
       - "cannot download"
@@ -56,6 +59,7 @@ rules:
       If it still won't work, try a different browser like Edge or Firefox.
 
   - id: virus_detected
+    title: Antivirus false positive
     patterns:
       - "virus detected"
       - "flagged as virus"
@@ -87,6 +91,8 @@ rules:
       **Fix:** temporarily turn off **Real-time protection** in **Virus & threat protection settings** in your antivirus, install Toolscreen, then re-enable it. Add a **folder** exclusion for the .jar and the `.config\toolscreen\dlls` folder so it doesn't get flagged again.
 
   - id: not_a_mod
+    title: Not a mod (wrong install)
+    listed: false
     patterns:
       - "mod crashed on startup"
       - "mod crashed"
@@ -95,14 +101,18 @@ rules:
       Toolscreen is **not a mod** — don't put it in your mods folder. Place the .jar in your instance folder and double-click it to run the installer.
 
   - id: corrupt_file
+    title: Invalid/corrupt jarfile
     patterns:
       - "invalid or corrupt"
       - "corrupt file"
       - "corrupt jar"
     reply: |
-      Re-run the Toolscreen installer — download the latest .jar and double-click it. Your config and settings are stored separately (`C:\Users\<username>\.config\toolscreen\`) and won't be affected.
+      If your .jar shows 0 KB, your browser corrupted the download. Check if you can allow it from the downloads page (`Ctrl+J`), or try another browser.
+
+      Otherwise, re-run the Toolscreen installer — download the latest .jar and double-click it. Your config and settings are stored separately (`C:\Users\<username>\.config\toolscreen\`) and won't be affected.
 
   - id: not_showing_up
+    title: Overlay not showing up
     patterns:
       - "toolscreen not showing"
       - "toolscreen doesn't show"
@@ -124,6 +134,7 @@ rules:
       3. **Wrong capture method** — try toggling **Force Update** or switching capture method in Toolscreen settings.
 
   - id: hotkey_in_inventory
+    title: Hotkeys triggering in menus
     patterns:
       - "!inv"
       - "hotkey in inventory"
@@ -163,6 +174,8 @@ rules:
       This way the hotkey only fires when you're actually playing, not in inventory or pause screens.
 
   - id: change_background
+    title: Custom background/images
+    listed: false
     patterns:
       - "!bg"
       - "change background"
@@ -192,6 +205,8 @@ rules:
       For mode backgrounds (behind thin/wide/eye zoom): **Advanced > Mode** > select the mode > **Background**, set it to Color, Image, or Gradient.
 
   - id: failed_locale
+    title: Failed to find locale (OBS)
+    listed: false
     patterns:
       - "failed to find locale"
       - "find locale"
@@ -203,3 +218,13 @@ rules:
       start "" /D "C:\Program Files\obs-studio\bin\64bit" obs64.exe
       ```
       Adjust the path to match your OBS install location.
+
+  - id: cant_update
+    title: Cannot update (antivirus)
+    patterns:
+      - "unwanted software"
+      - "contains a virus"
+    reply: |
+      Toolscreen uses DLL injection, which antivirus software flags as malicious (false positive).
+
+      **Fix:** disable your antivirus during the update (on Windows, that's **Real-time protection** in Virus & threat protection settings), or download the new .jar from the [release page](https://github.com/jojoe77777/Toolscreen/releases) and run the installer again (for MCSR Launcher, only option 1 works).

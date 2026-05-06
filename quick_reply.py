@@ -118,7 +118,10 @@ async def _ocr_attachments(message: discord.Message) -> str:
             data = await attachment.read()
             text = await asyncio.to_thread(_run_ocr, data)
             if text:
+                log.info("OCR %s: %s", attachment.filename, text[:120])
                 parts.append(text)
+            else:
+                log.info("OCR %s: empty result", attachment.filename)
         except Exception:
             log.warning("OCR failed for %s", attachment.filename, exc_info=True)
     return " ".join(parts).lower()

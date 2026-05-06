@@ -2,6 +2,7 @@
 !.gitignore
 !bot.py
 !doc_command.py
+!issue_command.py
 !quick_reply.py
 !quick_replies.yaml
 !docs.yaml

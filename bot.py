@@ -11,6 +11,7 @@ import yaml
 
 import troubleshoot
 import doc_command
+import issue_command
 import quick_reply
 
 log = logging.getLogger("toolscreen-bot")
@@ -123,6 +124,7 @@ tree = app_commands.CommandTree(client)
 troubleshoot.load_tree()
 troubleshoot.setup(client, tree)
 doc_command.setup(client, tree)
+issue_command.setup(client, tree)
 quick_reply.setup(config)
 
 
