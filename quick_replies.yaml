@@ -52,11 +52,11 @@ rules:
       - "could harm your"
       - "dangerous file"
     reply: |
-      Chrome (and some other browsers) flag the .jar as "not commonly downloaded". This is a false positive — click "Keep" on the download warning, or go to `chrome://downloads` and keep it from there.
+      Click "Keep" on the download warning, or go to `chrome://downloads` and keep it from there. Chrome flags the .jar as "not commonly downloaded" (false positive).
 
-      If the download still fails, make sure you turn off **Smart App Control**: **Windows Settings > Privacy & security > Windows Security > App & browser control > Smart App Control > Off**
+      If that doesn't work, turn off **Smart App Control**: **Windows Settings > Privacy & security > Windows Security > App & browser control > Smart App Control > Off**
 
-      If it still won't work, try a different browser like Edge or Firefox.
+      Still failing? Try another browser (Edge, Firefox).
 
   - id: virus_detected
     title: Antivirus false positive
@@ -86,9 +86,9 @@ rules:
       - "suschill"
       - "suschil"
     reply: |
-      Toolscreen uses DLL injection, so antivirus flags it as malicious (false positive).
+      False positive. Toolscreen uses DLL injection, which antivirus flags as malicious.
 
-      **Fix:** temporarily turn off **Real-time protection** in **Virus & threat protection settings** in your antivirus, install Toolscreen, then re-enable it. Add a **folder** exclusion for the .jar and the `.config\toolscreen\dlls` folder so it doesn't get flagged again.
+      Turn off **Real-time protection** in **Virus & threat protection settings**, install Toolscreen, then re-enable it. Add a **folder** exclusion for the .jar and `.config\toolscreen\dlls` so it doesn't get flagged again.
 
   - id: not_a_mod
     title: Not a mod (wrong install)
@@ -98,7 +98,7 @@ rules:
       - "mod crashed"
       - "crash on startup"
     reply: |
-      Toolscreen is **not a mod** — don't put it in your mods folder. Place the .jar in your instance folder and double-click it to run the installer.
+      Toolscreen is **not a mod**. Don't put it in your mods folder. Place the .jar in your instance folder and double-click it to run the installer.
 
   - id: corrupt_file
     title: Invalid/corrupt jarfile
@@ -109,7 +109,7 @@ rules:
     reply: |
       If your .jar shows 0 KB, your browser corrupted the download. Check if you can allow it from the downloads page (`Ctrl+J`), or try another browser.
 
-      Otherwise, re-run the Toolscreen installer — download the latest .jar and double-click it. Your config and settings are stored separately (`C:\Users\<username>\.config\toolscreen\`) and won't be affected.
+      Otherwise, re-download the latest .jar and double-click it to reinstall. Your config and settings are stored separately and won't be affected.
 
   - id: not_showing_up
     title: Overlay not showing up
@@ -129,9 +129,9 @@ rules:
     reply: |
       Common causes:
 
-      1. **Smart App Control** is blocking it silently — turn it off: **Windows + I > Privacy & security > Windows Security > App & browser control > Smart App Control > Off**
-      2. **Antivirus** deleted the DLL — check if `toolscreen.dll` is still in `.config\toolscreen\dlls`. If not, add a folder exclusion and reinstall.
-      3. **Wrong capture method** — try toggling **Force Update** or switching capture method in Toolscreen settings.
+      1. **Smart App Control** is blocking it silently. Turn it off: **Windows + I > Privacy & security > Windows Security > App & browser control > Smart App Control > Off**
+      2. **Antivirus** deleted the DLL. Check if `toolscreen.dll` is still in `.config\toolscreen\dlls`. If not, add a folder exclusion and reinstall.
+      3. **Wrong capture method**. Try toggling **Force Update** or switching capture method in Toolscreen settings.
 
   - id: hotkey_in_inventory
     title: Hotkeys triggering in menus
@@ -211,13 +211,11 @@ rules:
       - "failed to find locale"
       - "find locale"
     reply: |
-      This usually happens when a pre-launch command to start OBS (or another program) doesn't set the working directory correctly.
-
-      **Fix:** use `start` with an explicit working directory:
+      Your pre-launch command isn't setting the working directory. Use `start` with `/D`:
       ```
       start "" /D "C:\Program Files\obs-studio\bin\64bit" obs64.exe
       ```
-      Adjust the path to match your OBS install location.
+      Adjust the path to match your install location.
 
   - id: cant_update
     title: Cannot update (antivirus)
@@ -227,4 +225,4 @@ rules:
     reply: |
       Toolscreen uses DLL injection, which antivirus software flags as malicious (false positive).
 
-      **Fix:** disable your antivirus during the update (on Windows, that's **Real-time protection** in Virus & threat protection settings), or download the new .jar from the [release page](https://github.com/jojoe77777/Toolscreen/releases) and run the installer again (for MCSR Launcher, only option 1 works).
+      **Fix:** disable your antivirus during the update (that's **Real-time protection** in Virus & threat protection settings), or download the new .jar from the [release page](https://github.com/jojoe77777/Toolscreen/releases) and run the installer again (for MCSR Launcher, only option 1 works).
