@@ -13,7 +13,7 @@
 
 meta:
   version: 4
-  updated: "2026-03-17"
+  updated: "2026-05-06"
 
 nodes:
 
@@ -565,6 +565,8 @@ nodes:
     options:
       - label: "Jar file disappeared / 'unable to access jarfile'"
         next: sol_crash_jar_missing
+      - label: "'Invalid or corrupt jarfile' / jar is 0 KB"
+        next: sol_jar_corrupt_download
       - label: "Immediately on launch"
         next: crash_launch_code
       - label: "When pressing F11 (fullscreen toggle)"
@@ -590,6 +592,17 @@ nodes:
       3. Double-click the new .jar to install
       4. If it persists, temporarily disable Windows Defender real-time protection,
          install, then re-enable Defender
+    did_not_help: nsu_antivirus
+
+  sol_jar_corrupt_download:
+    type: solution
+    text: |
+      If your .jar shows 0 KB, your browser corrupted the download. Check if you can allow
+      it from the downloads page (`Ctrl+J`), or try another browser.
+
+      If the file has a normal size but still says "invalid or corrupt jarfile", re-run the
+      installer — download the latest .jar and double-click it. Your config and settings
+      are stored separately (`C:\Users\<username>\.config\toolscreen\`) and won't be affected.
     did_not_help: nsu_antivirus
 
   sol_crash_modloader_entry:
@@ -1777,10 +1790,23 @@ nodes:
         next: sol_howto_update
       - label: "Auto-update ran but version didn't change (silent fail)"
         next: sol_autoupdate_silent_fail
+      - label: "Update says 'contains a virus' or 'unwanted software'"
+        next: sol_update_blocked_av
       - label: "How to uninstall Toolscreen"
         next: sol_howto_uninstall
       - label: "How to copy settings between instances"
         next: sol_config_universal
+
+  sol_update_blocked_av:
+    type: solution
+    text: |
+      Toolscreen uses DLL injection, which antivirus software flags as malicious (false positive).
+
+      **Fix:** disable your antivirus during the update (on Windows, that's **Real-time protection**
+      in Virus & threat protection settings), or download the new .jar from the
+      [release page](https://github.com/jojoe77777/Toolscreen/releases) and run the installer
+      again (for MCSR Launcher, only option 1 works).
+    did_not_help: nsu_antivirus
 
   sol_howto_update:
     type: solution
@@ -2302,7 +2328,7 @@ nodes:
     text: |
       You can auto-launch NinjaBrainBot when Minecraft starts via Toolscreen's **prelaunch.txt** file.
 
-      Add this line to the `pre-launch.txt` file in your instance folder:
+      Add this line to the `prelaunch.txt` file in your instance folder:
       ```
       start "" javaw -jar "C:\path\to\ninjabrain-bot.jar"
       ```
