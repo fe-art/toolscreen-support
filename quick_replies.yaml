@@ -112,7 +112,7 @@ rules:
       Otherwise, re-download the latest .jar and double-click it to reinstall. Your config and settings are stored separately and won't be affected.
 
   - id: not_showing_up
-    title: Overlay not showing up
+    title: Toolscreen not working at all
     patterns:
       - "toolscreen not showing"
       - "toolscreen doesn't show"
@@ -122,16 +122,11 @@ rules:
       - "toolscreen not appearing"
       - "toolscreen doesn't appear"
       - "toolscreen doesnt appear"
-      - "overlay not showing"
-      - "overlay doesn't show"
-      - "overlay not appearing"
-      - "smart app control"
     reply: |
       Common causes:
 
       1. **Smart App Control** is blocking it silently. Turn it off: **Windows + I > Privacy & security > Windows Security > App & browser control > Smart App Control > Off**
       2. **Antivirus** deleted the DLL. Check if `toolscreen.dll` is still in `.config\toolscreen\dlls`. If not, add a folder exclusion and reinstall.
-      3. **Wrong capture method**. Try toggling **Force Update** or switching capture method in Toolscreen settings.
 
   - id: hotkey_in_inventory
     title: Hotkeys triggering in menus
