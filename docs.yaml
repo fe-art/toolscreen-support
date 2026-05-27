@@ -1,7 +1,7 @@
 prelaunch:
   title: Pre-Launch Commands
   summary: |
-    Toolscreen creates a `pre-launch.txt` file in every instance folder. Any line in this file runs as a command on game launch.
+    Toolscreen creates a `prelaunch.txt` file in every instance folder. Any line in this file runs as a command on game launch.
 
     To auto-start Ninjabrain Bot, add:
     ```
@@ -65,7 +65,11 @@ logs:
 config:
   title: Toolscreen Config
   summary: |
-    The config file is located at `C:/Users/<your username>/.config/toolscreen/config.toml`.
+    Your Toolscreen config lives in `C:/Users/<your username>/.config/toolscreen/`.
 
-    -# This global config file is shared between all Minecraft instances, but you can override it for a specific instance by creating a `toolscreen` folder in your instance's `.minecraft` folder.
+    To back up or move your config, copy the whole `toolscreen` folder.
+
+    For troubleshooting, use Advanced > Misc > Upload Debug Info in Toolscreen. It uploads your active config and logs and gives you a link to share with a helper.
+
+    -# This global folder is shared between all Minecraft instances, but you can override it for a specific instance by creating a `toolscreen` folder in that instance's `.minecraft` folder.
   wiki_url: https://github.com/jojoe77777/Toolscreen/wiki/Settings-and-Configuration#config-folder-locations
