@@ -67,6 +67,8 @@ config:
   summary: |
     Your Toolscreen config lives in `C:/Users/<your username>/.config/toolscreen/`.
 
+     To edit your config manually, changes go in your active profile's `.toml` file in the `profiles/` subfolder.
+
     To back up or move your config, copy the whole `toolscreen` folder.
 
     For troubleshooting, use Advanced > Misc > Upload Debug Info in Toolscreen. It uploads your active config and logs and gives you a link to share with a helper.
